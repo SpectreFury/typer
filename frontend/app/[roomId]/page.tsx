@@ -44,11 +44,11 @@ const Room = () => {
 
   useEffect(() => {
     const fetchParagraph = async () => {
-      const response = await fetch("https://api.quotable.io/random");
+      const response = await fetch("https://api.quotable.io/quotes/random");
       const result = await response.json();
 
       console.log(result);
-      setParagraph(result.content);
+      setParagraph(result[0].content);
     };
 
     fetchParagraph();
