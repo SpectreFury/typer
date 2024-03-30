@@ -31,15 +31,15 @@ const PlayerItem = ({
   useEffect(() => {
     if (!socket) return;
 
-    const timeoutId = setTimeout(() => {
-      socket.emit("sending_progress", {
-        roomId: roomId,
-        id: ourId,
-        progress,
-      });
-    }, 1000);
+    // const timeoutId = setTimeout(() => {
+    socket.emit("sending_progress", {
+      roomId: roomId,
+      id: ourId,
+      progress,
+    });
+    // }, 1000);
 
-    return () => clearTimeout(timeoutId);
+    // return () => clearTimeout(timeoutId);
   }, [socket, progress]);
 
   useEffect(() => {
