@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-const PARAGRAPH =
-  "He sat staring at the person in the train stopped at the station going in the opposite direction. She sat staring ahead, never noticing that she was being watched. Both trains began to move and he knew that in another timeline or in another universe, they had been happy together.";
 import { Input } from "@/components/ui/input";
 import Players from "./_components/player";
 
@@ -18,7 +16,7 @@ export type Player = {
 const Room = () => {
   const [input, setInput] = useState("");
   const [isCorrect, setIsCorrect] = useState(true);
-  const [paragraph, setParagraph] = useState(PARAGRAPH);
+  const [paragraph, setParagraph] = useState("");
 
   const [ourId, setOurId] = useState("");
 
@@ -45,6 +43,18 @@ const Room = () => {
   };
 
   useEffect(() => {
+    const fetchParagraph = async () => {
+      const response = await fetch("https://api.quotable.io/random");
+      const result = await response.json();
+
+      console.log(result);
+      setParagraph(result.content);
+    };
+
+    fetchParagraph();
+  }, []);
+
+  useEffect(() => {
     if (!socket) return;
 
     socket.emit("join_room", {
@@ -53,15 +63,6 @@ const Room = () => {
 
     socket.on("sending_our_id", (id) => {
       setOurId(id);
-
-      // setPlayers((prev) => [
-      //   ...prev,
-      //   {
-      //     name: "Guest(You)",
-      //     id: id,
-      //     progress: 0,
-      //   },
-      // ]);
     });
 
     socket.on("player_joined", (id) => {
@@ -125,10 +126,6 @@ const Room = () => {
       );
     });
   }, [socket]);
-
-  useEffect(() => {
-    console.log(players);
-  }, [players]);
 
   useEffect(() => {
     inputList.forEach((letter, index) => {
