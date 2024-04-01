@@ -30,6 +30,8 @@ const Room = () => {
   const [incorrectIndexes, setIncorrectIndexes] = useState<number[]>([]);
 
   const [players, setPlayers] = useState<Player[]>([]);
+  const [isStarted, setIsStarted] = useState(false);
+  const [startingCounter, setStartingCounter] = useState(10);
 
   const verifyInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (
@@ -56,6 +58,18 @@ const Room = () => {
 
     fetchParagraph();
   }, []);
+
+  useEffect(() => {
+    if (!players.length || startingCounter === 0) return;
+
+    const intervalId = setInterval(() => {
+      setStartingCounter((prev) => prev - 1);
+    }, 1000);
+
+    setIsStarted(true);
+
+    return () => clearInterval(intervalId);
+  }, [players, startingCounter]);
 
   useEffect(() => {
     if (!socket) return;
@@ -146,6 +160,7 @@ const Room = () => {
 
   return (
     <div className="container flex flex-col items-center mt-10">
+      <div>{startingCounter}</div>
       <Players
         paragraph={paragraph}
         input={input}
@@ -163,7 +178,12 @@ const Room = () => {
           </span>
         ))}
       </div>
-      <Input className="max-w-[800px]" value={input} onChange={verifyInput} />{" "}
+      <Input
+        className="max-w-[800px]"
+        value={input}
+        onChange={verifyInput}
+        disabled={!isStarted || startingCounter !== 0}
+      />{" "}
       <div>{isCorrect ? "Yes" : "No"}</div>
     </div>
   );
