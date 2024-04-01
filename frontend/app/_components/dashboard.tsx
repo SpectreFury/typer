@@ -14,7 +14,7 @@ const Dashboard = () => {
   const joinRoom = async () => {
     if (!socket?.id) return;
 
-    const response = await fetch("http://localhost:5000/room", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/room`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
