@@ -4,13 +4,28 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+import { useSocket } from "@/components/providers/socket-provider";
+
 const Dashboard = () => {
   const router = useRouter();
 
-  const joinRoom = () => {
-    const ROOM_ID = "random";
+  const { socket } = useSocket();
 
-    router.push(`/${ROOM_ID}`);
+  const joinRoom = async () => {
+    if (!socket?.id) return;
+
+    const response = await fetch("http://localhost:5000/room", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: socket.id,
+      }),
+    });
+
+    const result = await response.json();
+    router.push(`/${result.id}`);
   };
 
   return (
