@@ -33,6 +33,8 @@ const Room = () => {
   const [isStarted, setIsStarted] = useState(false);
   const [startingCounter, setStartingCounter] = useState(10);
 
+  const [scores, setScores] = useState<string[]>([]);
+
   const verifyInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (
       !isCorrect &&
@@ -129,6 +131,10 @@ const Room = () => {
       console.log("Available players", players);
       console.log("Received player: ", progressData);
 
+      if (progressData.progress === 100) {
+        setScores((prev) => [...prev, progressData.id]);
+      }
+
       setPlayers((prev) =>
         prev.map((player) => {
           if (player.id === progressData.id) {
@@ -145,6 +151,9 @@ const Room = () => {
   }, [socket]);
 
   useEffect(() => {
+    if ((input.length / paragraph.length) * 100 === 100) {
+      setScores((prev) => [...prev, socket!.id as string]);
+    }
     inputList.forEach((letter, index) => {
       if (letter !== paragraphList[index]) {
         setIsCorrect(false);
@@ -185,6 +194,11 @@ const Room = () => {
         disabled={!isStarted || startingCounter !== 0}
       />{" "}
       <div>{isCorrect ? "Yes" : "No"}</div>
+      <div>
+        {scores.map((score) => (
+          <div>{score}</div>
+        ))}
+      </div>
     </div>
   );
 };
